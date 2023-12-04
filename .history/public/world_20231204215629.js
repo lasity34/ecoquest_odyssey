@@ -1,13 +1,12 @@
 
 function getPlantFact(plantName) {
     var facts = {
-        "Protea": "The Protea, also known as the 'Sugarbush', is native to South Africa and symbolizes change and hope. It's a unique flower with a striking appearance, often found in the fynbos region.",
-        "Silver Tree": "The Silver Tree is a rare plant native to the Table Mountain area of Cape Town. Known for its distinctive silver-gray leaves, it's a member of the Protea family and thrives in a Mediterranean climate.",
-        "Cape Daisy": "Cape Daisy, or Osteospermum, is a popular garden plant in South Africa. It's known for its bright, daisy-like flowers and is commonly used in borders and containers."
+        "Protea": "Fact about Protea...",
+        "Silver Tree": "Fact about Silver Tree...",
+        "Cape Daisy": "Fact about Cape Daisy..."
     };
     return facts[plantName] || "No fact available for this plant.";
 }
-
 
 
 window.addEventListener('DOMContentLoaded', function () {
@@ -73,32 +72,21 @@ window.addEventListener('DOMContentLoaded', function () {
             label.cornerRadius = 20;
             label.thickness = 1;
             label.linkOffsetY = 30;
-            advancedTexture.addControl(label);
-            label.linkWithMesh(trunk);
+            // advancedTexture.addControl(label);
+            // label.linkWithMesh(trunk);
             
             var text1 = new BABYLON.GUI.TextBlock();
             text1.text = treeName;
             text1.color = "white";
             text1.fontSize = 14;
             label.addControl(text1);
-
-            var onTreeClicked = function () {
-                var fact = getPlantFact(treeName);
-                console.log("Tree clicked:", treeName); 
-        
-                document.getElementById('plantTitle').innerText = "Tree: " + treeName;
-                document.getElementById('plantInfo').innerText = fact;
-                document.getElementById('plantModal').style.display = 'block';
-            };
             
 
             // Click Event for Trees
             trunk.actionManager = new BABYLON.ActionManager(scene);
-            trunk.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, onTreeClicked));
-        
-            // Assign click behavior to leaves
-            leaves.actionManager = new BABYLON.ActionManager(scene);
-            leaves.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, onTreeClicked))
+            trunk.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function () {
+                console.log("Trunk clicked:", treeName); // Simplified click event
+            }));
             
         };
 
@@ -138,13 +126,8 @@ window.addEventListener('DOMContentLoaded', function () {
             }));
         };
 
-        scene.meshes.forEach(mesh => {
-            if (!mesh.name.startsWith("trunk") && !mesh.name.startsWith("leaves")) {
-                addClickBehavior(mesh);
-            }
-        });
-        
-        
+        // Apply clickable behavior (if needed)
+        scene.meshes.forEach(addClickBehavior);
 
         return scene;
     };
@@ -159,16 +142,12 @@ window.addEventListener('DOMContentLoaded', function () {
     });
 
 
-
-        window.addEventListener('click', function(event) {
-            var modal = document.getElementById('plantModal');
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        });
-        
-   
+    
 });
 
 
-
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('closeModal').onclick = function() {
+        document.getElementById('plantModal').style.display = 'none';
+    };
+});

@@ -139,11 +139,10 @@ window.addEventListener('DOMContentLoaded', function () {
         };
 
         scene.meshes.forEach(mesh => {
-            if (!mesh.name.startsWith("trunk") && !mesh.name.startsWith("leaves")) {
+            if (mesh.name.startsWith("trunk") === false) { // Exclude trunks
                 addClickBehavior(mesh);
             }
         });
-        
         
 
         return scene;
@@ -159,7 +158,7 @@ window.addEventListener('DOMContentLoaded', function () {
     });
 
 
-
+    document.addEventListener('DOMContentLoaded', function() {
         window.addEventListener('click', function(event) {
             var modal = document.getElementById('plantModal');
             if (event.target === modal) {
@@ -167,7 +166,8 @@ window.addEventListener('DOMContentLoaded', function () {
             }
         });
         
-   
+    });
+    
 });
 
 

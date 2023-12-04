@@ -139,11 +139,10 @@ window.addEventListener('DOMContentLoaded', function () {
         };
 
         scene.meshes.forEach(mesh => {
-            if (!mesh.name.startsWith("trunk") && !mesh.name.startsWith("leaves")) {
+            if (mesh.name.startsWith("trunk") === false) {
                 addClickBehavior(mesh);
             }
         });
-        
         
 
         return scene;
