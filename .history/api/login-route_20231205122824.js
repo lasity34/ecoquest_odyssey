@@ -3,7 +3,7 @@ import db from "../model/db.js";
 import loginService from "../services/login-users.js";
 
 // validate.js module
-import {login }from "../validate.js";
+import login from "../validate.js";
 
 
 // Instances

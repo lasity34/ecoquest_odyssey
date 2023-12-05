@@ -3,7 +3,7 @@ import db from "../model/db.js";
 import signupService from "../services/register-users.js";
 
 // validate.js module
-import {signup} from "../validate.js";
+import signup from "../validate.js";
 
 import bcrypt from "bcrypt";
 

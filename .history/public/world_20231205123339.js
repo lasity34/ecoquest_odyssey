@@ -203,43 +203,25 @@ window.addEventListener("DOMContentLoaded", function () {
             var lake = BABYLON.MeshBuilder.CreateGround("lake", { width: 20, height: 20 }, scene);
             lake.position = position;
     
-            // Creating water material
+            // Create water material
             var waterMaterial = new BABYLON.WaterMaterial("waterMat", scene, new BABYLON.Vector2(512, 512));
-            waterMaterial.bumpTexture = new BABYLON.Texture("path_to_water_bump_texture.png", scene); // Replace with your water bump texture path
+            waterMaterial.bumpTexture = new BABYLON.Texture("textures/waterbump.png", scene); // Use an appropriate water bump texture
             waterMaterial.windForce = -10;
             waterMaterial.waveHeight = 0.5;
             waterMaterial.bumpHeight = 0.1;
             waterMaterial.waveLength = 0.1;
             waterMaterial.colorBlendFactor = 0;
     
-            // Adjust water color and properties
-            waterMaterial.waterColor = new BABYLON.Color3(0, 0.3, 0.5);
-            waterMaterial.colorBlendFactor = 0.3;
-            waterMaterial.waterColorLevel = 0.2;
-    
-            // Adding skybox and other elements to the water reflection list
-            var skybox = scene.getMeshByName("skyBox"); // Assuming you have a skybox
-            if (skybox) {
-                waterMaterial.reflectionTexture.renderList.push(skybox);
-            }
-    
-            // Add other meshes that should be reflected in the water
-            scene.meshes.forEach(mesh => {
-                if (mesh !== lake && mesh !== skybox) {
-                    waterMaterial.reflectionTexture.renderList.push(mesh);
-                    waterMaterial.refractionTexture.renderList.push(mesh);
-                }
-            });
-    
+            // Assign material to the lake
             lake.material = waterMaterial;
+    
             objectPositions.push({ position: position, type: "lake" });
-            savePositions();
+            savePositions(); // Save the updated positions
             return lake;
         } else {
             console.log("Overlap detected. Lake not created.");
         }
-    };
-    
+    }
     
 
     // Tree Creation Function with Labels and Click Events
