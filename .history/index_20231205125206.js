@@ -4,12 +4,10 @@ import dotenv from "dotenv";
 import pgPromise from "pg-promise";
 import session from 'express-session';
 
+
 // login, signup routers
 import signupRouter from "./api/signup-route.js";
 import loginRouter from "./api/login-route.js";
-
-// cors import
-import cors from "cors";
 
 // App instance
 const app = express();
@@ -42,8 +40,8 @@ app.use(cors({
 
 
 // Routes middlewares
-app.use("/api/signup", signupRouter);
-app.use("/api/login", loginRouter);
+app.use("/signup", signupRouter);
+app.use("/login", loginRouter);
 
 const PORT = process.env.PORT || 3014;
 
