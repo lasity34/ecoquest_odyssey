@@ -339,43 +339,39 @@ window.addEventListener("DOMContentLoaded", function () {
     var plantNames = ["Protea", "Silver Tree", "Cape Daisy"];
 
     function updateEnvironment() {
-      // Load existing positions from local storage
-      loadPositions();
-    
-      // Create trees for each correct answer if they don't already exist
-      for (let i = 0; i < correctAnswers; i++) {
-        var treeName = plantNames[i % plantNames.length];
-        let position = placeObjectSafely(scene, "tree", treeName);
-        if (position) {
-          createTree(scene, position.x, position.z, treeName);
-          // Check if the position was already in objectPositions to avoid duplicates
-          if (!objectPositions.some(p => p.type === "tree" && p.name === treeName)) {
-            objectPositions.push({ position: position, type: "tree", name: treeName });
-            savePositions();
-          }
-        }
-      }
-    
-      // Similar logic for mountains and lakes
-      if (correctAnswers >= 5 && !objectPositions.some(p => p.type === "mountain")) {
-        let position = placeObjectSafely(scene, "mountain", "Mountain");
-        if (position) {
-          createMountain(scene, position.x, position.z, "Mountain");
-          objectPositions.push({ position: position, type: "mountain", name: "Mountain" });
-          savePositions();
-        }
-      }
-    
-      if (correctAnswers >= 10 && !objectPositions.some(p => p.type === "lake")) {
-        let position = placeObjectSafely(scene, "lake", "Lake");
-        if (position) {
-          createLake(scene, position.x, position.z, "Lake");
-          objectPositions.push({ position: position, type: "lake", name: "Lake" });
-          savePositions();
-        }
-      }
+  // Load existing positions from local storage
+  loadPositions();
+
+  // Iterate through the correct answers and place trees accordingly
+  for (let i = 0; i < correctAnswers; i++) {
+    var treeName = plantNames[i % plantNames.length];
+
+    // Check if the tree already exists in the scene
+    let existingTree = objectPositions.find(p => p.type === "tree" && p.name === treeName);
+    if (!existingTree) {
+      let position = getNewPositionFor("tree");  // Define this function to find a new position
+      createTree(scene, position.x, position.z, treeName);
+      objectPositions.push({ position: position, type: "tree", name: treeName });
+      savePositions();
     }
-    
+  }
+
+  // Logic for creating a mountain if correct answers are 5 or more
+  if (correctAnswers >= 5 && !objectPositions.some(p => p.type === "mountain")) {
+    let position = getNewPositionFor("mountain");  // Define this function to find a new position
+    createMountain(scene, position.x, position.z, "Mountain");
+    objectPositions.push({ position: position, type: "mountain", name: "Mountain" });
+    savePositions();
+  }
+
+  // Logic for creating a lake if correct answers are 10 or more
+  if (correctAnswers >= 10 && !objectPositions.some(p => p.type === "lake")) {
+    let position = getNewPositionFor("lake");  // Define this function to find a new position
+    createLake(scene, position.x, position.z, "Lake");
+    objectPositions.push({ position: position, type: "lake", name: "Lake" });
+    savePositions();
+  }
+}
 
     
     
