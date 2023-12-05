@@ -40,7 +40,7 @@ signupRouter.post("/user", async (req, res) => {
         // CREATE new user
         await SignupService.createUser(user);
 
-        res.status.json({
+        res.json({
             status: "Successfully registered a user"
         });
 

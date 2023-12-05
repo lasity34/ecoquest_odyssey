@@ -6,8 +6,14 @@ const schema = Joi.object({
     password: Joi.string().min(6).required()
 });
 
+const loginSchema = Joi.object({
+    name: Joi.string().min(6),
+    email: Joi.string().min(6),
+    password: Joi.string().min(6).required()
+});
+
 const signup = (data) => schema.validate(data);
 
-const login = (data) => schema.validate(data);
+const login = (data) => loginSchema.validate(data);
 
 export { signup, login };

@@ -1,7 +1,7 @@
 const registerUsers = (db) => {
 
     const registeredUsers = async () => {
-        return await db.manyOrNone();
+        return await db.manyOrNone("select * from user_table");
     };
 
     const createUser = async ({name, email, password}) => {
@@ -12,7 +12,10 @@ const registerUsers = (db) => {
         ];
 
         
-        await db.none();
+        const values = `values ($1, $2, $3)`;
+        const query = `insert into user_table (username, email, password_hash) ${values}`;
+
+        await db.none(query, data);
     };
 
     return {

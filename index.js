@@ -9,6 +9,9 @@ import session from 'express-session';
 import signupRouter from "./api/signup-route.js";
 import loginRouter from "./api/login-route.js";
 
+// cors import
+import cors from "cors";
+
 // App instance
 const app = express();
 
@@ -40,8 +43,8 @@ app.use(cors({
 
 
 // Routes middlewares
-app.use("/signup", signupRouter);
-app.use("/login", loginRouter);
+app.use("/api/signup", signupRouter);
+app.use("/api/login", loginRouter);
 
 const PORT = process.env.PORT || 3014;
 
