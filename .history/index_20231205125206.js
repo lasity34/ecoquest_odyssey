@@ -3,8 +3,6 @@ import { engine } from 'express-handlebars'
 import dotenv from "dotenv";
 import pgPromise from "pg-promise";
 import session from 'express-session';
-import cors from 'cors';
-
 
 
 // login, signup routers
