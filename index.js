@@ -6,8 +6,8 @@ import session from 'express-session';
 
 
 // login, signup routers
-import signupRouter from "./routes/signup-route.js";
-import loginRouter from "./routes/login-route.js";
+import signupRouter from "./api/signup-route.js";
+import loginRouter from "./api/login-route.js";
 
 // App instance
 const app = express();
@@ -32,6 +32,11 @@ const connection = {
 const pgp = pgPromise();
 
 const db = pgp(connection);
+
+// Cors middleware
+app.use(cors({
+    origin: "*"
+}));
 
 
 // Routes middlewares
