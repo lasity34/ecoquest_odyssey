@@ -104,7 +104,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
      
 
-        var correctAnswers = 10; // Set to the number of correct answers
+        var correctAnswers = 3; // Set to the number of correct answers
 
         var plantNames = ["Protea", "Silver Tree", "Cape Daisy"];
 

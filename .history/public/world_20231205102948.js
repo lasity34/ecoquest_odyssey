@@ -45,7 +45,7 @@ window.addEventListener('DOMContentLoaded', function () {
             var lake = BABYLON.MeshBuilder.CreateGround("lake", {width: 30, height: 30}, scene);
             lake.position.x = x;
             lake.position.z = z;
-            // lake.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
+            lake.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
             lake.material = new BABYLON.StandardMaterial("waterMat", scene);
             lake.material.diffuseColor = new BABYLON.Color3(0, 0.8, 0.5);
         };
@@ -104,7 +104,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
      
 
-        var correctAnswers = 10; // Set to the number of correct answers
+        var correctAnswers = 3; // Set to the number of correct answers
 
         var plantNames = ["Protea", "Silver Tree", "Cape Daisy"];
 
