@@ -25,30 +25,31 @@ function isOverlapping(newPosition, existingObjects, size) {
 }
 
 function placeObjectSafely(createFunc, scene, objectType, maxAttempts = 200) {
-    let success = false;
-    let position;
-  
-    for (let attempts = 0; attempts < maxAttempts; attempts++) {
-      let x = (Math.random() - 0.5) * 200;
-      let z = (Math.random() - 0.5) * 200;
-      let overlapSize = objectType === "tree" ? 5 : 15;
-  
-      position = new BABYLON.Vector3(x, 0, z);
-      if (!isOverlapping(position, objectPositions, overlapSize)) {
-        createFunc(scene, x, z, objectType);
-        objectPositions.push({ position: position, type: objectType }); // Save position
-        savePositions(); // Persist positions
-        success = true;
-        break;
-      }
-    }
-  
-    if (!success) {
-      console.log(`Unable to place ${objectType} after ${maxAttempts} attempts.`);
-      // Handle the case where no non-overlapping position is found
+  let success = false;
+  let position;
+
+  for (let attempts = 0; attempts < maxAttempts; attempts++) {
+    let x = (Math.random() - 0.5) * 200; // Adjust the range based on your scene
+    let z = (Math.random() - 0.5) * 200;
+    let overlapSize = objectType === "tree" ? 5 : 15; // Smaller sizes for less strict overlap checking
+
+    position = new BABYLON.Vector3(x, 0, z);
+    if (!isOverlapping(position, objectPositions, overlapSize)) {
+      createFunc(scene, x, z, objectType);
+      success = true;
+      break;
     }
   }
-  
+
+  if (!success) {
+    console.log(
+      `Unable to place ${objectType} after ${maxAttempts} attempts. Placing at default position.`
+    );
+    // Default fallback position
+    position = new BABYLON.Vector3(0, 0, 0);
+    createFunc(scene, position.x, position.z, objectType);
+  }
+}
 
 function adjustPositionForCreation(
   scene,
@@ -221,89 +222,87 @@ window.addEventListener("DOMContentLoaded", function () {
 
     // Tree Creation Function with Labels and Click Events
     var createTree = function (scene, x, z, treeName) {
-        // Find a saved position or generate a new one
         let savedPosition = objectPositions.find(p => p.type === "tree" && p.name === treeName);
         let position;
-    
+      
         if (savedPosition) {
-            // Use the saved position
-            position = new BABYLON.Vector3(savedPosition.position.x, 0, savedPosition.position.z);
+          // Use the saved position
+          position = new BABYLON.Vector3(savedPosition.position.x, 0, savedPosition.position.z);
         } else {
-            // Generate a new position
-            position = new BABYLON.Vector3(x, 0, z);
-            if (isOverlapping(position, objectPositions, 10)) {
-                console.log("Overlap detected. Tree not created.");
-                return; // Skip tree creation due to overlap
-            }
-            // Record position of the new tree if it's not overlapping
-            objectPositions.push({ position: position, type: "tree", name: treeName });
-            savePositions(); // Save the updated positions
+          // Generate a new position and check for overlap
+          position = new BABYLON.Vector3(x, 0, z);
+          if (isOverlapping(position, objectPositions, 10)) {
+            console.log("Overlap detected. Tree not created.");
+            return; // Skip tree creation due to overlap
+          }
         }
-    
-        // Create the trunk
+      if (!isOverlapping(position, objectPositions, 10)) {
         var trunk = BABYLON.MeshBuilder.CreateCylinder(
-            "trunk",
-            { height: 4, diameter: 1 },
-            scene
+          "trunk",
+          { height: 4, diameter: 1 },
+          scene
         );
-        trunk.position = position;
-        trunk.position.y = 2; // Set trunk height
+        trunk.position.x = x;
+        trunk.position.y = 2;
+        trunk.position.z = z;
         trunk.material = new BABYLON.StandardMaterial("trunkMat", scene);
         trunk.material.diffuseColor = new BABYLON.Color3(0.4, 0.3, 0.3);
-    
-        // Create the leaves
+
         var leaves = BABYLON.MeshBuilder.CreateSphere(
-            "leaves",
-            { diameter: 6, segments: 8 },
-            scene
+          "leaves",
+          { diameter: 6, segments: 8 },
+          scene
         );
-        leaves.position = new BABYLON.Vector3(position.x, 7, position.z); // Place leaves above the trunk
+        leaves.position = new BABYLON.Vector3(x, 7, z);
         leaves.material = new BABYLON.StandardMaterial("leavesMat", scene);
         leaves.material.diffuseColor = new BABYLON.Color3(0.1, 0.8, 0.1);
-    
-        // Create label for the tree
+
         var label = new BABYLON.GUI.Rectangle("label for " + treeName);
         label.background = "black";
         label.height = "30px";
+        label.alpha = 1;
         label.width = "100px";
         label.cornerRadius = 20;
         label.thickness = 1;
         label.linkOffsetY = 30;
         advancedTexture.addControl(label);
         label.linkWithMesh(trunk);
-    
+
         var text1 = new BABYLON.GUI.TextBlock();
         text1.text = treeName;
         text1.color = "white";
         text1.fontSize = 14;
         label.addControl(text1);
-    
-        // Click event for the tree
+
         var onTreeClicked = function () {
-            var fact = getPlantFact(treeName);
-            document.getElementById("plantTitle").innerText = "Tree: " + treeName;
-            document.getElementById("plantInfo").innerText = fact;
-            document.getElementById("plantModal").style.display = "block";
+          var fact = getPlantFact(treeName);
+          document.getElementById("plantTitle").innerText = "Tree: " + treeName;
+          document.getElementById("plantInfo").innerText = fact;
+          document.getElementById("plantModal").style.display = "block";
         };
-    
-        // Add action manager for interactivity
+
         trunk.actionManager = new BABYLON.ActionManager(scene);
         trunk.actionManager.registerAction(
-            new BABYLON.ExecuteCodeAction(
-                BABYLON.ActionManager.OnPickTrigger,
-                onTreeClicked
-            )
+          new BABYLON.ExecuteCodeAction(
+            BABYLON.ActionManager.OnPickTrigger,
+            onTreeClicked
+          )
         );
-    
+
         leaves.actionManager = new BABYLON.ActionManager(scene);
         leaves.actionManager.registerAction(
-            new BABYLON.ExecuteCodeAction(
-                BABYLON.ActionManager.OnPickTrigger,
-                onTreeClicked
-            )
+          new BABYLON.ExecuteCodeAction(
+            BABYLON.ActionManager.OnPickTrigger,
+            onTreeClicked
+          )
         );
+
+        // Record position of the new tree
+        objectPositions.push({ position: position, type: "tree" });
+      } else {
+        console.log("Overlap detected. Tree not created.");
+      }
     };
-    
 
     var correctAnswers = 10; // Set to the number of correct answers
 

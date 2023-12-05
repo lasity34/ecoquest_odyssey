@@ -25,30 +25,31 @@ function isOverlapping(newPosition, existingObjects, size) {
 }
 
 function placeObjectSafely(createFunc, scene, objectType, maxAttempts = 200) {
-    let success = false;
-    let position;
-  
-    for (let attempts = 0; attempts < maxAttempts; attempts++) {
-      let x = (Math.random() - 0.5) * 200;
-      let z = (Math.random() - 0.5) * 200;
-      let overlapSize = objectType === "tree" ? 5 : 15;
-  
-      position = new BABYLON.Vector3(x, 0, z);
-      if (!isOverlapping(position, objectPositions, overlapSize)) {
-        createFunc(scene, x, z, objectType);
-        objectPositions.push({ position: position, type: objectType }); // Save position
-        savePositions(); // Persist positions
-        success = true;
-        break;
-      }
-    }
-  
-    if (!success) {
-      console.log(`Unable to place ${objectType} after ${maxAttempts} attempts.`);
-      // Handle the case where no non-overlapping position is found
+  let success = false;
+  let position;
+
+  for (let attempts = 0; attempts < maxAttempts; attempts++) {
+    let x = (Math.random() - 0.5) * 200; // Adjust the range based on your scene
+    let z = (Math.random() - 0.5) * 200;
+    let overlapSize = objectType === "tree" ? 5 : 15; // Smaller sizes for less strict overlap checking
+
+    position = new BABYLON.Vector3(x, 0, z);
+    if (!isOverlapping(position, objectPositions, overlapSize)) {
+      createFunc(scene, x, z, objectType);
+      success = true;
+      break;
     }
   }
-  
+
+  if (!success) {
+    console.log(
+      `Unable to place ${objectType} after ${maxAttempts} attempts. Placing at default position.`
+    );
+    // Default fallback position
+    position = new BABYLON.Vector3(0, 0, 0);
+    createFunc(scene, position.x, position.z, objectType);
+  }
+}
 
 function adjustPositionForCreation(
   scene,
