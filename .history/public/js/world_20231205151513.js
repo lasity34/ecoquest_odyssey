@@ -31,25 +31,46 @@ function placeObjectSafely(scene, objectType, objectName, maxAttempts = 200) {
   // Check if the specific object already exists
   let existingObject = objectPositions.find(p => p.type === objectType && p.name === objectName);
   if (existingObject) {
+    // Object already exists, use the existing position
+    if (objectType === "tree") {
+      createTree(scene, existingObject.position.x, existingObject.position.z, objectName);
+    } else if (objectType === "mountain") {
+      createMountain(scene, existingObject.position.x, existingObject.position.z, objectName);
+    } else if (objectType === "lake") {
+      createLake(scene, existingObject.position.x, existingObject.position.z, objectName);
+    }
     console.log(`Using existing position for ${objectType}: ${objectName}`);
-    return existingObject.position;
+    return;
   }
 
-  // Attempt to find a new position for the object
+  // Find a new position for new objects
+  let success = false;
+  let position;
   for (let attempts = 0; attempts < maxAttempts; attempts++) {
     let x = (Math.random() - 0.5) * 200;
     let z = (Math.random() - 0.5) * 200;
     let overlapSize = objectType === "tree" ? 5 : 15;
 
-    let position = new BABYLON.Vector3(x, 0, z);
+    position = new BABYLON.Vector3(x, 0, z);
     if (!isOverlapping(position, objectPositions, overlapSize)) {
+      if (objectType === "tree") {
+        createTree(scene, x, z, objectName);
+      } else if (objectType === "mountain") {
+        createMountain(scene, x, z, objectName);
+      } else if (objectType === "lake") {
+        createLake(scene, x, z, objectName);
+      }
+      objectPositions.push({ position: position, type: objectType, name: objectName });
+      savePositions();
+      success = true;
       console.log(`Placed new ${objectType}: ${objectName}`);
-      return position;
+      break;
     }
   }
 
-  console.log(`Unable to place ${objectType} after ${objectName} attempts.`);
-  return null;
+  if (!success) {
+    console.log(`Unable to place ${objectType} after ${objectName} attempts.`);
+  }
 }
 
 
@@ -338,6 +359,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
     var plantNames = ["Protea", "Silver Tree", "Cape Daisy"];
 
+    // Function to update environment based on correct answers
     function updateEnvironment() {
       // Load existing positions from local storage
       loadPositions();
@@ -345,38 +367,25 @@ window.addEventListener("DOMContentLoaded", function () {
       // Create trees for each correct answer if they don't already exist
       for (let i = 0; i < correctAnswers; i++) {
         var treeName = plantNames[i % plantNames.length];
-        let position = placeObjectSafely(scene, "tree", treeName);
-        if (position) {
-          createTree(scene, position.x, position.z, treeName);
-          // Check if the position was already in objectPositions to avoid duplicates
-          if (!objectPositions.some(p => p.type === "tree" && p.name === treeName)) {
-            objectPositions.push({ position: position, type: "tree", name: treeName });
-            savePositions();
-          }
+    
+        // Check if the tree for this answer already exists
+        let existingTree = objectPositions.find(p => p.type === "tree" && p.name === treeName);
+        if (!existingTree) {
+          // Only place the tree if it does not exist
+          placeObjectSafely(scene, "tree", treeName); // Corrected call
         }
       }
     
-      // Similar logic for mountains and lakes
+      // Create a mountain if correct answers are 5 or more and it doesn't exist
       if (correctAnswers >= 5 && !objectPositions.some(p => p.type === "mountain")) {
-        let position = placeObjectSafely(scene, "mountain", "Mountain");
-        if (position) {
-          createMountain(scene, position.x, position.z, "Mountain");
-          objectPositions.push({ position: position, type: "mountain", name: "Mountain" });
-          savePositions();
-        }
+        placeObjectSafely(scene, "mountain", "Mountain"); // Corrected call
       }
     
+      // Create a lake if correct answers are 10 or more and it doesn't exist
       if (correctAnswers >= 10 && !objectPositions.some(p => p.type === "lake")) {
-        let position = placeObjectSafely(scene, "lake", "Lake");
-        if (position) {
-          createLake(scene, position.x, position.z, "Lake");
-          objectPositions.push({ position: position, type: "lake", name: "Lake" });
-          savePositions();
-        }
+        placeObjectSafely(scene, "lake", "Lake"); // Corrected call
       }
     }
-    
-
     
     
     
