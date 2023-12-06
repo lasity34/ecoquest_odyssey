@@ -1,11 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup Page</title>
-</head>
-<body>
-    
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Signup Page</title>
+    </head>
+    <body>
+        <div class="loginContainer">
+            <div>
+                <div class="heading">
+                    <h1>
+                        <strong>
+                            Signup Page
+                        </strong>
+                    </h1>
+                </div>
+
+                <!-- messsage section -->
+                <div class="message"></div>
+
+                <div class="signupForm">
+                        <div>
+                            <label for="username">
+                                <strong>
+                                    Username
+                                </strong>
+                            </label>
+
+                            <div>
+                                <input name="username" class="username" type="text" placeholder="Enter your username" required />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="username">
+                                <strong>
+                                    Email
+                                </strong>
+                            </label>
+
+                            <div>
+                                <input name="email" class="email" type="text" placeholder="Enter your email" required />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="password">
+                                <strong>
+                                    Password
+                                </strong>
+                            </label>
+
+                            <div>
+                                <input name="password" class="password" type="password" placeholder="Enter your password" required />
+                            </div>
+                        </div>
+                </div>
+
+                <div>
+                    <div>
+                        <button type="button" class="signupBtn">
+                            <strong>
+                                Signup
+                            </strong>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <!-- js script tags -->
+    <script src="./js/signup.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </html>
