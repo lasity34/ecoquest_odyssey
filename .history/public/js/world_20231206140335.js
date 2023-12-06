@@ -143,7 +143,7 @@ var createLake = function (scene, x, z) {
 
 
 // Tree Creation Function with Labels and Click Events
-var createTree = function (scene, advancedTexture, latitude, longitude, treeName) {
+var createTree = function (scene, advancedTexture, x, z, treeName) {
        // Check if a tree with this name and type already exists in objectPositions
        let savedPosition = objectPositions.find(p => p.type === "tree" && p.name === treeName);
 

@@ -143,62 +143,56 @@ var createLake = function (scene, x, z) {
 
 
 // Tree Creation Function with Labels and Click Events
-var createTree = function (scene, advancedTexture, latitude, longitude, treeName) {
-       // Check if a tree with this name and type already exists in objectPositions
-       let savedPosition = objectPositions.find(p => p.type === "tree" && p.name === treeName);
+var createTree = function (scene, advancedTexture, x, z, treeName) {
+    // Find a saved position or generate a new one
+    let savedPosition = objectPositions.find(p => p.type === "tree" && p.name === treeName);
+    let position;
 
-       // Convert spherical coordinates (latitude, longitude) to Cartesian coordinates
-       let sphereRadius = 200; // Assuming the radius of your spherical world
-       let phi = BABYLON.Tools.ToRadians(90 - latitude); // Convert latitude to radians
-       let theta = BABYLON.Tools.ToRadians(longitude); // Convert longitude to radians
-   
-       let sphereX = sphereRadius * Math.sin(phi) * Math.cos(theta);
-       let sphereY = sphereRadius * Math.cos(phi);
-       let sphereZ = sphereRadius * Math.sin(phi) * Math.sin(theta);
-   
-       let position = new BABYLON.Vector3(sphereX, sphereY, sphereZ);
-   
-       if (!savedPosition) {
-           // If no saved position, check for overlap and potentially push new position
-           if (isOverlapping(position, objectPositions, 10)) {
-               console.log("Overlap detected. Tree not created.");
-               return; // Skip tree creation due to overlap
-           }
-   
-           // Record position of the new tree
-           console.log("Position being pushed:", position);
-           objectPositions.push({
-               x: position.x, 
-               y: position.y, 
-               z: position.z, 
-               type: "tree", 
-               name: treeName
-           });
-   
-           savePositions();
-       } else {
-           // Use the saved position
-           position = new BABYLON.Vector3(savedPosition.x, savedPosition.y, savedPosition.z);
-       }
-   
-       // Adjust the position to account for tree height
-       position = position.normalize().scale(sphereRadius + 2); // 2 is half the height of the tree
-   
-       // Create the trunk
-       var trunk = BABYLON.MeshBuilder.CreateCylinder("trunk", { height: 4, diameter: 1 }, scene);
-       trunk.position = position;
-       trunk.position.y += 2; // Raise trunk to sit on the sphere's surface
-   
-       // Orient the trunk to stand upright on the sphere
-       let up = position.subtract(new BABYLON.Vector3(0, 0, 0)).normalize();
-       let right = BABYLON.Vector3.Cross(up, new BABYLON.Vector3(0, 1, 0)).normalize();
-       let forward = BABYLON.Vector3.Cross(right, up).normalize();
-       trunk.rotationQuaternion = BABYLON.Quaternion.RotationQuaternionFromAxis(right, up, forward);
-   
-       // Create the leaves
-       var leaves = BABYLON.MeshBuilder.CreateSphere("leaves", { diameter: 6, segments: 8 }, scene);
-       leaves.parent = trunk; // Parent leaves to trunk
-       leaves.position = new BABYLON.Vector3(0, 5, 0);
+    if (savedPosition) {
+        // Use the saved position
+        position = new BABYLON.Vector3(savedPosition.position.x, 0, savedPosition.position.z);
+    } else {
+        // Generate a new position
+        position = new BABYLON.Vector3(x, 0, z);
+        if (isOverlapping(position, objectPositions, 10)) {
+            console.log("Overlap detected. Tree not created.");
+            return; // Skip tree creation due to overlap
+        }
+        // Record position of the new tree if it's not overlapping
+        if (!savedPosition) {
+          console.log("Position being pushed:", position);
+          objectPositions.push({
+            x: position.x, 
+            y: position.y, 
+            z: position.z, 
+            type: "tree", // or "mountain"/"lake" as appropriate
+            name: treeName // if applicable
+          });
+          
+          savePositions();
+        }
+    }
+
+    // Create the trunk
+    var trunk = BABYLON.MeshBuilder.CreateCylinder(
+        "trunk",
+        { height: 4, diameter: 1 },
+        scene
+    );
+    trunk.position = position;
+    trunk.position.y = 2; // Set trunk height
+    trunk.material = new BABYLON.StandardMaterial("trunkMat", scene);
+    trunk.material.diffuseColor = new BABYLON.Color3(0.4, 0.3, 0.3);
+
+    // Create the leaves
+    var leaves = BABYLON.MeshBuilder.CreateSphere(
+        "leaves",
+        { diameter: 6, segments: 8 },
+        scene
+    );
+    leaves.position = new BABYLON.Vector3(position.x, 7, position.z); // Place leaves above the trunk
+    leaves.material = new BABYLON.StandardMaterial("leavesMat", scene);
+    leaves.material.diffuseColor = new BABYLON.Color3(0.1, 0.8, 0.1);
 
     // Create label for the tree
     var label = new BABYLON.GUI.Rectangle("label for " + treeName);
@@ -343,7 +337,7 @@ function createScene(engine, canvas) {
   var light = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(1, 1, 0), scene);
 
   // Spherical world setup
-  var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 400, segments: 32}, scene);
+  var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 100, segments: 32}, scene);
   var sphereMaterial = new BABYLON.StandardMaterial("sphereMat", scene);
   sphereMaterial.diffuseColor = new BABYLON.Color3(0.2, 0.2, 0.1);
   sphere.material = sphereMaterial;
