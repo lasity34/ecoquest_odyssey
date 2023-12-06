@@ -41,8 +41,15 @@ loginRouter.post("/user", async (req, res) => {
         error: "Not registered in the signup page."
     })
 
-    const passwordId = await LoginService.getPasswordId(user);
-    const validPassword = await bcrypt.compare(user.password, passwordId.password_hash);
+    let password;
+    let userId;
+    
+    getUser.forEach(results => {
+        password = results.password_hash;
+        userId = results.user_id;
+    });
+
+    const validPassword = await bcrypt.compare(user.password, password);
 
     if (!validPassword) return res.json({
         status: "error",
@@ -56,7 +63,7 @@ loginRouter.post("/user", async (req, res) => {
     res.header("authorization", token).status(200).json({
         status: "Logged in...",
         token: token,
-        loggedUserId: passwordId.user_id
+        loggedUserId: userId
     });
 });
 
