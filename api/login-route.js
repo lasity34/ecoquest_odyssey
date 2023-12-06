@@ -8,6 +8,9 @@ import {login }from "../validate.js";
 // Bcrypt import
 import bcrypt from "bcrypt";
 
+// JWT import
+import jwt from "jsonwebtoken";
+
 // Instances
 const loginRouter = Router();
 const LoginService = loginService(db);
@@ -39,21 +42,27 @@ loginRouter.post("/user", async (req, res) => {
     // Checks registered users
     const getUser = await LoginService.checkUser(user);
 
-    if (!getUser) return res.json({
+    if (getUser.length === 0) return res.json({
         status: "error",
         error: "Not registered in the signup page."
     })
 
-    const password = await LoginService.getPassword(user);
-    const validPassword = await bcrypt.compare(user.password, password.password_hash);
+    const passwordId = await LoginService.getPasswordId(user);
+    const validPassword = await bcrypt.compare(user.password, passwordId.password_hash);
 
     if (!validPassword) return res.json({
         status: "error",
         error: "Invalid password."
     });
 
-    res.json({
-        status: "Logged in..."
+    const token = jwt.sign({
+        name: user.name
+    }, process.env.TOKEN, { expiresIn: '1h' });
+
+    res.header("authorization", token).status(200).json({
+        status: "Logged in...",
+        token: token,
+        loggedUserId: passwordId.user_id
     });
 });
 

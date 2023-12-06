@@ -22,6 +22,7 @@
     "express-session": "^1.17.3",
     "handlebars": "^4.7.8",
     "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mocha": "^10.2.0",
     "moment": "^2.29.4",

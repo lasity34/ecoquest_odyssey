@@ -24,13 +24,13 @@ const loginUsers = (db) => {
         };
     };
 
-    const getPassword = async ({name, email, password}) => {
+    const getPasswordId = async ({name, email}) => {
         if (name) {
             const data = [
                 name
             ];
             const filter = `where username = $1`;
-            const query = `select password_hash from user_table ${filter}`;
+            const query = `select user_id, password_hash from user_table ${filter}`;
     
             return await db.oneOrNone(query, data);
         };
@@ -40,7 +40,7 @@ const loginUsers = (db) => {
                 email
             ];
             const filter = `where email = $1`;
-            const query = `select password_hash from user_table ${filter}`;
+            const query = `select user_id, password_hash from user_table ${filter}`;
     
             return await db.oneOrNone(query, data);
         };
@@ -48,7 +48,7 @@ const loginUsers = (db) => {
 
     return {
         checkUser,
-        getPassword
+        getPasswordId
     };
 };
 
