@@ -27,17 +27,11 @@ loginRouter.post("/user", async (req, res) => {
 
     // USER object
     const user = {
-        name: req.body.name,
-        email: req.body.email,
+        usernameOrEmail: req.body.usernameOrEmail,
         password: req.body.password
     }; 
 
-    if (user.name) {
-        user.name.toLowerCase();
-
-    } else {
-        user.email.toLowerCase();
-    };
+    user.usernameOrEmail.toLowerCase()
 
     // Checks registered users
     const getUser = await LoginService.checkUser(user);

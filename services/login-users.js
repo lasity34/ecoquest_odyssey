@@ -1,33 +1,35 @@
 const loginUsers = (db) => {
-    const checkUser = async ({name, email, password}) => {
+    const checkUser = async ({usernameOrEmail}) => {
+        const checksEmail = usernameOrEmail.includes("@");
 
-        if (name) {
+        if (!checksEmail) {
             const data = [
-                name,
-                password
+                usernameOrEmail
             ];
-            const filter = `where username = $1 and password_hash = $2`;
+            const filter = `where username = $1`;
             const query = `select * from user_table ${filter}`;
-    
+            
             return await db.manyOrNone(query, data);
         };
 
-        if (email) {
+        if (checksEmail) {
             const data = [
-                email,
-                password
+                usernameOrEmail
             ];
-            const filter = `where email = $1 and password_hash = $2`;
+            const filter = `where email = $1`;
             const query = `select * from user_table ${filter}`;
-    
+            
+            console.log(await db.manyOrNone(query, data)); 
             return await db.manyOrNone(query, data);
         };
     };
 
-    const getPasswordId = async ({name, email}) => {
-        if (name) {
+    const getPasswordId = async ({usernameOrEmail}) => {
+        const checksEmail = usernameOrEmail.includes("@");
+
+        if (!checksEmail) {
             const data = [
-                name
+                usernameOrEmail
             ];
             const filter = `where username = $1`;
             const query = `select user_id, password_hash from user_table ${filter}`;
@@ -35,9 +37,9 @@ const loginUsers = (db) => {
             return await db.oneOrNone(query, data);
         };
 
-        if (email) {
+        if (checksEmail) {
             const data = [
-                email
+                usernameOrEmail
             ];
             const filter = `where email = $1`;
             const query = `select user_id, password_hash from user_table ${filter}`;
