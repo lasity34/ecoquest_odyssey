@@ -15,5 +15,14 @@ router.get("/", async (req, res) => {
     }
 } );
 
+router.get("/items", async (req, res) => {
+    try {
+        let questItemsList = await questServiceInstance.getAllQuestItems() ;
+        res.status(200).json(questItemsList);
+    } catch (error) {
+        console.log(error);
+    }
+} );
+
 
 export default router;
