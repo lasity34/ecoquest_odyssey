@@ -1,11 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-</head>
-<body>
-    
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login Page</title>
+    </head>
+
+    <body>
+        <div class="loginContainer">
+            <div>
+                <div class="heading">
+                    <h1>
+                        <strong>
+                            Login Page
+                        </strong>
+                    </h1>
+                </div>
+
+                <!-- messsage section -->
+                <div class="message"></div>
+
+                <div class="loginForm">
+                        <div>
+                            <label for="username or email">
+                                <strong>
+                                    Username or email
+                                </strong>
+                            </label>
+
+                            <div>
+                                <input name="username or email" class="usernameOrEmail" type="text" placeholder="Enter your username or email" required />
+                            </div>
+                        </div>
+
+                        <div class="py-2">
+                            <label for="password">
+                                <strong>
+                                    Password
+                                </strong>
+                            </label>
+
+                            <div>
+                                <input name="password" class="password" type="password" placeholder="Enter your password" required />
+                            </div>
+                        </div>
+                </div>
+
+                <div>
+                    <div>
+                        <button type="button" class="loginBtn">
+                            <strong>
+                                Login
+                            </strong>
+                        </button>
+
+                    </div>
+
+                    <div>
+                        <span>
+                            <strong>
+                                Not registered?
+                            </strong>
+                        </span>
+
+                        <a href="signup.html">Register here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <!-- js script tags -->
+    <script src="./js/login.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </html>

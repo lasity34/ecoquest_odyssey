@@ -18,8 +18,7 @@ const loginUsers = (db) => {
             ];
             const filter = `where email = $1`;
             const query = `select * from user_table ${filter}`;
-            
-            console.log(await db.manyOrNone(query, data)); 
+
             return await db.manyOrNone(query, data);
         };
     };
